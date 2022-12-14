@@ -11,14 +11,13 @@ const loginForm = () => {
         cache: false,
         data: JSON.stringify(dataJson)
     }).done(function (result) {
-        console.log(result);
         if (result.status == 200) {
             //redirecting to main page from here.
-            window.location.replace(result.Location);
+            window.location.href = result.Location;
         }
     }).fail(function (result) {
         if (result.status == 401) {
-            alert("Username or Password Incorrect")
+            document.getElementById("errorName").textContent = "Username or Password Incorrect";
         }
     });;
 };
