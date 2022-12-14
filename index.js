@@ -41,7 +41,7 @@ const bugReportUrl = process.env.DEVELOPER_NAME || pkg.bugs.url;
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'public'))) ;
+app.use(express.static(path.join(__dirname, 'public')));
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, './public/src/images/events')
@@ -454,6 +454,33 @@ const uploadImg = async (req, res) => {
   res.end();
 };
 
+const login = async (req, res) => {
+  req.on('data', chunk => {
+    let body = [];
+    body.push(chunk);
+    body = Buffer.concat(body).toString();
+    let json = JSON.parse(body);
+
+    let dataJson = [];
+    let datajs = fs.readFileSync('./public/src/json/admin.json', 'utf-8');
+    dataJson = JSON.parse(datajs);
+    let sta = 0;
+    let word;
+
+    for (let i = 0; i < dataJson.length; i++) {
+      if (json.username == dataJson[i].username && json.password == dataJson[i].password) {
+        sta = 200;
+        word = '/AdminPage';
+      }
+      else {
+        sta = 401;
+        word = '/AdminLogin';
+      }
+    }
+    return res.status(sta).json({Location : word, status : sta})
+  })
+};
+
 app.use(cors());
 app.use(compression());
 app.set("json spaces", 4);
@@ -477,5 +504,6 @@ app.post("/api/save", saveJson);
 app.post("/api/update", updateJson);
 app.get("/api/getJson", getJson);
 app.post('/api/upload', upload.single('myfile'), uploadImg);
+app.post('/api/login', login);
 
 app.listen(port, () => console.log(`app listening on port ${port}!. On http://localhost:${port}`));

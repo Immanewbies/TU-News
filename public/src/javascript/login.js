@@ -3,40 +3,27 @@ let err = 0;
 const loginForm = () => {
     const userInput = $(".user-box").val();
     const passInput = $(".pass-box").val();
+    var dataJson = { "username": userInput, "password": passInput }
 
     $.ajax({
-        url: `./api/login/?q=${encodeURIComponent(userInput)}`,
-        method: "GET",
+        url: `./api/login`,
+        method: "POST",
         cache: false,
-        beforeSend: () => {
-            fetch("./src/json/admin.json")
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    for (let i = 0; i < data.length; i++) {
-                        console.log(data[i]);
-                        if (userInput == data[i].username && passInput == data[i].password) {
-                            window.location.href="/AdminPage"
-                        }
-                        else{
-                            window.location.href="/AdminLogin"
-                        }
-                    }
-                })
+        data: JSON.stringify(dataJson)
+    }).done(function (result) {
+        console.log(result);
+        if (result.status == 200) {
+            //redirecting to main page from here.
+            window.location.replace(result.Location);
         }
-        // ,
-        // success: () => {
-        //     setTimeout(() => {
-        //     window.location.href="/AdminPage"}, 3000);
-        // },
-        // error: () => {
-
-        // },
-    });
+    }).fail(function (result) {
+        if (result.status == 401) {
+            alert("Username or Password Incorrect")
+        }
+    });;
 };
 
 $("#login-form").submit((e) => {
     e.preventDefault();
     loginForm();
-  });
+});
