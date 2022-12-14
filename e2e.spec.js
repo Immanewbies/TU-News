@@ -41,13 +41,13 @@ describe('Login Page',()=> {
             // await page.waitForNavigation()
             page.$eval('Button.button', element =>
                 element.click()
-            ),
-            await page.waitForNavigation(),
+            )
         ])
-        expect(page.url()).toBe('http://localhost:3000/AdminLogin');
+        expect(await page.$eval('Span#errorName', el => el.textContent)).toBe('Username or Password Incorrect');
     })
 
     it('should Display AdminPage By login pass', async () => {
+        await page.goto('http://localhost:3000/AdminLogin');
         await page.type('input.user-box', "Admin");
         await page.type('input.pass-box', "Admin");
         await Promise.all([
