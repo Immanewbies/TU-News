@@ -1,0 +1,57 @@
+name: CI/CD pipeline
+run-name: ${{ github.actor }} doing CI/CD pipeline
+on: [push]
+jobs:
+  build-cicd:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - run: npm ci
+      - run: npm run build --if-present
+      - run: npm start & npm test
+      - run: mkdir docker
+      - run: cd docker
+      - run: touch setup.sh
+      - run: echo '#!/bin/sh' >> setup.sh
+      - run: echo 'yum install git -y' >> setup.sh
+      - run: echo 'yum install gcc-c++ make -y' >> setup.sh
+      - run: echo 'curl -sL https://rpm.nodesource.com/setup_16.x | bash' >> setup.sh
+      - run: echo 'yum install nodejs -y' >> setup.sh
+      - run: echo 'git clone https://github.com/Immanewbies/TU-News   ' >> setup.sh
+      - run: echo 'cd TU-News' >> setup.sh
+      - run: echo 'npm ci' >> setup.sh
+      - run: echo 'yum -y update' >> setup.sh
+      - run: echo 'npm start' >> setup.sh
+      - run: touch Dockerfile
+      - run: echo 'FROM amazonlinux' >> Dockerfile
+      - run: echo 'EXPOSE 3000' >> Dockerfile
+      - run: echo 'COPY setup.sh /' >> Dockerfile
+      - run: echo 'RUN chmod 705 ./setup.sh' >> Dockerfile
+      - run: echo 'CMD ["./setup.sh"]' >> Dockerfile
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - run: docker image build -t ${{ secrets.DOCKERHUB_USERNAME }}/tunews:latest .
+      - run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/tunews:latest
+      - name: Configure AWS credentials
+        if: success()
+        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - name: Create EC2 and deploy application to EC2
+        if: success()
+        env: 
+          KEY_PAIR_NAME: ${{ secrets.AWS_KEYPAIR_NAME }}
+          SECGROUP_ID: ${{ secrets.AWS_SECGROUP_ID }}
+          IMAGE_ID: ${{ secrets.AWS_IMAGE_ID }}
+        run: aws ec2 run-instances --image-id $IMAGE_ID --instance-type t2.micro  --key-name $KEY_PAIR_NAME --security-group-ids $SECGROUP_ID --user-data file://script/user_data_script.txt
+      
