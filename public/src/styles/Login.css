@@ -1,4 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins');
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/poppins/v20/pxiEyp8kv8JHgFVrFJA.ttf) format('truetype')
+}
 
 body {
     position: absolute;
@@ -6,6 +12,7 @@ body {
     height: auto;
     background: #FCF1F2;
     margin: 0%;
+    font-family: "Poppins";
 }
 
 .login-box {

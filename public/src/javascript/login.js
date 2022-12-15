@@ -19,7 +19,7 @@ const loginForm = () => {
         if (result.status == 401) {
             document.getElementById("errorName").textContent = "Username or Password Incorrect";
         }
-    });;
+    });
 };
 
 $("#login-form").submit((e) => {

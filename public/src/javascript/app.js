@@ -150,11 +150,10 @@ window.onload = () => {
                              
 
               table1.appendChild(addtable);
-          }else {
-              break;
           }
           count1 = count1 + 1;
-          } else if (datajson[i].type == "events") {
+          }
+          if (datajson[i].type == "events") {
             if (count2 < 4) {
               addtable.innerHTML = `<div class="eventbox1">\n` +
                   `            <h3>${datajson[i].type}</h3><br>\n` +
@@ -165,8 +164,6 @@ window.onload = () => {
                   `            <button type="submit" class="popupBtn" onclick="openPopup(${i})" id="o${i}">อ่านเพิ่มเติม</button>\n`
                   
               table2.appendChild(addtable);
-          }else {
-              break;
           }
           count2 = count2 + 1;
           }

@@ -273,19 +273,24 @@ const saveJson = async (req, res) => {
     body.push(chunk);
     body = Buffer.concat(body).toString();
     let json = JSON.parse(body);
+    let sta = 0;
+    let word;
 
-    let outputJson = [];
-    // let data = fs.readFileSync('./data.js', { encoding: 'utf-8' });
-    // outputJson = JSON.parse(data);
-    let datajs = fs.readFileSync('./public/src/json/data.json', 'utf-8');
-    outputJson = JSON.parse(datajs);
-    outputJson.push(json);
-    outputJson = JSON.stringify(outputJson);
+    if (json.type == '' || json.event == '' || json.detail == '' || json.date == '' || json.outdate == '') {
+      sta = 404;
+      word = '/EventManage';
+    } else {
+      let outputJson = [];
+      let datajs = fs.readFileSync('./public/src/json/data.json', 'utf-8');
+      outputJson = JSON.parse(datajs);
+      outputJson.push(json);
+      outputJson = JSON.stringify(outputJson);
 
-    fs.writeFileSync('./public/src/json/data.json', outputJson)
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.write('บันทึกสำเร็จ');
-    res.end();
+      fs.writeFileSync('./public/src/json/data.json', outputJson)
+      sta = 200;
+      word = '/AdminPage';
+    }
+    return res.status(sta).json({ Location: word, status: sta })
   })
 };
 
@@ -297,17 +302,13 @@ const updateJson = async (req, res) => {
     var sbody = body.split('+');
     var json = JSON.parse(sbody[0]);
     var num = parseInt(sbody[1]);
-    // json = JSON.stringify(json);
-
     let outputJson = [];
     let spliceJson = [];
-    // let data = fs.readFileSync('./data.js', { encoding: 'utf-8' });
-    // outputJson = JSON.parse(data);
+
     let datajs = fs.readFileSync('./public/src/json/data.json', 'utf-8');
     outputJson = JSON.parse(datajs);
     spliceJson = outputJson.splice(num, 1, json);
     outputJson = JSON.stringify(outputJson);
-
     fs.writeFileSync('./public/src/json/data.json', outputJson)
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.write('อัพเดทสถานะเรียบร้อย');
@@ -478,7 +479,7 @@ const login = async (req, res) => {
         word = '/AdminLogin';
       }
     }
-    return res.status(sta).json({Location : word, status : sta})
+    return res.status(sta).json({ Location: word, status: sta })
   })
 };
 

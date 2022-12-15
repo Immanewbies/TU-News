@@ -27,13 +27,12 @@ function loadDoc() {
                                 `            <p>รายละเอียด: ${datajson[i].detail}</p><br>\n` +
                                 `            <p>วันที่เริ่ม: ${datajson[i].date}</p>\n` +
                                 `            <p>วันที่จบ: ${datajson[i].outdate}</p>\n` +
-                                `            <a href="./info?id=${i}">แก้ไข</a></li>\n`
+                                `            <a href="./info?id=${i}" id="o${i}">แก้ไข</a></li>\n`
                             table1.appendChild(addtable);
-                        }else {
-                            break;
                         }
                         count1 = count1 + 1;
-                    } else if (datajson[i].type == "events") {
+                    }
+                    if (datajson[i].type == "events") {
                         if (count2 < 4) {
                             addtable.innerHTML = `<div class="eventbox1">\n` +
                                 `            <h3>${datajson[i].type}</h3><br>\n` +
@@ -41,10 +40,8 @@ function loadDoc() {
                                 `            <p>รายละเอียด: ${datajson[i].detail}</p><br>\n` +
                                 `            <p>วันที่เริ่ม: ${datajson[i].date}</p>\n` +
                                 `            <p>วันที่จบ: ${datajson[i].outdate}</p>\n` +
-                                `            <a href="./info?id=${i}">แก้ไข</a></li>\n`
+                                `            <a href="./info?id=${i}" id="o${i}">แก้ไข</a></li>\n`
                             table2.appendChild(addtable);
-                        }else {
-                            break;
                         }
                         count2 = count2 + 1;
                     }

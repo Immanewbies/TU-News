@@ -45,6 +45,8 @@ const submitForm = () => {
     const imgInp = $("input#myfile").val().replace(/C:\\fakepath\\/i, '');
     var dataJson = { "type": typeInp, "event": eventInp, "detail": detailInp, "date": dateInp, "outdate": outdateInp, "img": "./src/images/events/"+imgInp }
 
+    var param;
+
     $.ajax({
         url: `./api/update`,
         method: "POST",
@@ -55,21 +57,14 @@ const submitForm = () => {
                 datajson = getjsons;
                 datajson[i] = dataJson;
                 var myJSON = JSON.stringify(datajson[i]);
-                var param = `${myJSON}+${i}`;
+                param = `${myJSON}+${i}`;
                 const xhttp = new XMLHttpRequest();
                 xhttp.open("POST", "/api/update", true);
                 xhttp.send(param);
             });
-        },
-        success: () => {
-            alert("ส่งคำร้องสำเร็จแล้วจ้า")
-        },
-        error: () => {
-
-        },
-        complete: () => {
-            window.location.href = "/AdminPage"
-        },
+        }
+    }).done( () => {
+        window.location.href = '/AdminPage';
     });
 
     var form = $('#event-form')[0];

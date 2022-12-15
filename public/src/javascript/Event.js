@@ -6,26 +6,21 @@ const submitForm = () => {
     const outdateInp = $("input#event-outdate").val();
     const imgInp = $("input#myfile").val().replace(/C:\\fakepath\\/i, '');
     var dataJson = { "type": typeInp, "event": eventInp, "detail": detailInp, "date": dateInp, "outdate": outdateInp, "img": "./src/images/events/" + imgInp }
-
+    
     $.ajax({
         url: `./api/save`,
         method: "POST",
         cache: false,
-        beforeSend: () => {
-            var myJSON = JSON.stringify(dataJson);
-            const xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "/api/save", true);
-            xhttp.send(myJSON);
-        },
-        success: () => {
-            console.log('Send Success')
-        },
-        error: () => {
-
-        },
-        complete: () => {
-            window.location.href = "/AdminPage"
-        },
+        data: myJSON = JSON.stringify(dataJson),
+    }).done(function (result) {
+        if (result.status == 200) {
+            //redirecting to main page from here.
+            window.location.href = result.Location;
+        }
+    }).fail(function (result) {
+        if (result.status == 404) {
+            document.getElementById("errorName").textContent = "Please enter all information";
+        }
     });
     var form = $('#event-form')[0];
     var formData = new FormData(form);

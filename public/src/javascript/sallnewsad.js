@@ -24,7 +24,7 @@ function loadDoc() {
                             `            <h4>${datajson[i].event}</h4>\n` +
                             `            <p>รายละเอียด: ${datajson[i].detail}</p><br>\n` +
                             `            <p>วันเวลา: ${datajson[i].date}</p>\n` +
-                            `            <a href="./info?id=${i}">แก้ไข</a></li>\n`
+                            `            <a href="./info?id=${i}" id="o${i}">แก้ไข</a></li>\n`
                         table1.appendChild(addtable);
                     }
                 }
